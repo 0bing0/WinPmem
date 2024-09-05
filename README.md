@@ -1,10 +1,12 @@
-# The WinPmem memory acquisition driver and userspace.
+# WinPmem -- a physical memory acquisition tool
 
 ![alt text](site/figures/128x128/winpmem_with_eye.png "WinPmem -- a physical memory acquisition tool")
 
-WinPmem has been the default open source memory acquisition driver for
+**WinPmem** has been the default open source memory acquisition driver for
 windows for a long time. It used to live in the Rekall project, but
 has recently been separated into its own repository.
+
+This is the *Windows* version. The *Linux* version, **Linpmem**, is at: [https://github.com/Velocidex/Linpmem](https://github.com/Velocidex/Linpmem)
 
 ## Copyright
 
@@ -17,12 +19,12 @@ WinPmem is a physical memory acquisition tool with the following features:
 
 - Open source
 
-- Support for WinXP - Win 10, x86 + x64. The WDK7600 can be used to
+- Support for Win7 - Win 10, x86 + x64. The WDK7600 might be used to
   include WinXP support.
   As default, the provided WinPmem executables will be compiled with WDK10,
   supporting Win7 - Win10, and featuring more modern code.
 
-- Three different independent methods to create a memory dump.
+- Three independent reading methods, with two methods to create a complete memory dump.
   One method should always work even when faced with kernel mode rootkits.
 
 - Raw memory dump image support.
@@ -70,6 +72,10 @@ To acquire a raw image using specifically the MmMapIoSpace method:
 
 The driver will be automatically unloaded after the image is acquired!
 
+### Limitations
+
+Due to how Microsoft designed the MJ READ function, reading from physical memory will fail in Winpmem with STATUS_INVALID_PARAMETER if a physical address *larger* than half the maximum value of an UINT64 is specified. E.g., this is true if somebody wants to read in higher parts of the physical memory **and** has a giant physical memory (more than 9,223,372,036,854,775,807). This sounds highly unlikely, but todays RAM sizes continue to increase.
+
 Experimental write support
 --------------------------
 
@@ -100,6 +106,8 @@ Additionally, Write support must also be enabled at load time:
 This will load the drivers and turn on write support.
 
 # Acknowledgments
+
+Winpmem, as well as Linpmem, would not exist without the work of our predecessors of the (now retired) REKALL project: https://github.com/google/rekall.
 
 This project would also not be possible without support from the wider
 DFIR community:
